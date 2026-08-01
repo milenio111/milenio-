@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Milenio S.U.R.L. - Ventanas y Puertas de Acero Galvanizado</title>
+    <meta name="description" content="Ventanas y puertas de acero galvanizado de alta calidad en Cuba." />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- ============================================================
+    FIREBASE (compat, cargado de forma síncrona)
+    ============================================================ -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js">
+    </script>
+
+    <style>
+        /* ========== RESET Y VARIABLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-blue: #0a2a4a;
+            --light-blue: #2a7faa;
+            --white: #ffffff;
+            --black: #1e1e1e;
+            --gray-light: #f0f4f8;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ========== BOTONES ========== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .btn-primary {
+            background: var(--light-blue);
+            color: var(--white);
+        }
+        .btn-primary:hover {
+            background: #1e6a8e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(42, 127, 170, 0.3);
+        }
+        .btn-dark {
+            background: var(--dark-blue);
+            color: var(--white);
+        }
+        .btn-dark:hover {
+            background: #0d3b5e;
+            transform: translateY(-2px);
+        }
+        .btn-whatsapp {
+            background: #25d366;
+            color: var(--white);
+        }
+        .btn-whatsapp:hover {
+            background: #1da85a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--light-blue);
+            color: var(--light-blue);
+        }
+        .btn-outline:hover {
+            background: var(--light-blue);
+            color: var(--white);
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #b02a37;
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 12px 0;
+        }
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .logo i {
+            color: var(--light-blue);
+            font-size: 1.8rem;
+        }
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+        .nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            font-weight: 500;
+        }
+        .nav a {
+            transition: color var(--transition);
+            position: relative;
+        }
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--light-blue);
+            transition: width var(--transition);
+        }
+        .nav a:hover::after,
+        .nav a:focus::after {
+            width: 100%;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .cart-icon {
+            position: relative;
+            font-size: 1.6rem;
+            color: var(--dark-blue);
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+        .cart-icon:hover {
+            color: var(--light-blue);
+        }
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: var(--light-blue);
+            color: var(--white);
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--dark-blue);
+            cursor: pointer;
+        }
+
+        .admin-toggle {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--dark-blue);
+            cursor: pointer;
+            transition: transform 0.3s;
+            opacity: 0.6;
+        }
+        .admin-toggle:hover {
+            transform: rotate(60deg);
+            opacity: 1;
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #0d3b5e 100%);
+            color: var(--white);
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBkPSJNMzAgMjBoLTEwdjEwaDEweiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==');
+            opacity: 0.2;
+            mix-blend-mode: overlay;
+        }
+        .hero .container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        .hero-logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-logo i {
+            color: var(--light-blue);
+        }
+        .hero-logo img {
+            height: 60px;
+            width: auto;
+        }
+
+        /* ========== PRODUCTOS ========== */
+        .section {
+            padding: 80px 0;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform var(--transition), box-shadow var(--transition);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+        }
+        .product-card .image {
+            height: 220px;
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--light-blue);
+            overflow: hidden;
+        }
+        .product-card .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-card .info {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card .info h3 {
+            font-size: 1.3rem;
+            color: var(--dark-blue);
+            margin-bottom: 6px;
+        }
+        .product-card .info .price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light-blue);
+            margin: 8px 0 16px;
+        }
+        .product-card .info .description {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 16px;
+        }
+        .product-card .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+        .product-card .actions .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 2px solid var(--gray-light);
+            border-radius: 50px;
+            padding: 4px 10px;
+        }
+        .product-card .actions .qty-control button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--dark-blue);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            transition: background var(--transition);
+        }
+        .product-card .actions .qty-control button:hover {
+            background: var(--gray-light);
+        }
+        .product-card .actions .qty-control span {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .product-card .actions .btn {
+            flex: 1;
+            padding: 10px 18px;
+        }
+
+        /* ========== CARRITO ========== */
+        .cart-section {
+            background: var(--gray-light);
+            padding: 60px 0;
+        }
+        .cart-section .cart-container {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .cart-section h2 {
+            font-size: 1.8rem;
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-light);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item .item-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .cart-item .item-name {
+            font-weight: 600;
+        }
+        .cart-item .item-qty {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-item .item-qty button {
+            background: var(--gray-light);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+        .cart-item .item-qty button:hover {
+            background: #d1d9e0;
+        }
+        .cart-item .item-qty span {
+            min-width: 24px;
+            text-align: center;
+        }
+        .cart-item .item-total {
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 20px 0 10px;
+            border-top: 2px solid var(--gray-light);
+            margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .cart-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .empty-cart i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: var(--gray-light);
+        }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 360px;
+            width: 100%;
+        }
+        .toast {
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 14px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.4s ease;
+            border-left: 4px solid var(--light-blue);
+        }
+        .toast.success {
+            border-left-color: #25d366;
+        }
+        .toast.error {
+            border-left-color: #dc3545;
+        }
+        .toast i {
+            font-size: 1.4rem;
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 4px;
+        }
+        .toast .toast-close:hover {
+            color: var(--white);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: var(--dark-blue);
+            color: var(--white);
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        /* ========== WHATSAPP FLOAT ========== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+        .whatsapp-float .main-btn {
+            background: #25d366;
+            color: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+            border: none;
+            cursor: pointer;
+            transition: transform var(--transition);
+        }
+        .whatsapp-float .main-btn:hover {
+            transform: scale(1.08);
+        }
+        .whatsapp-float .sub-menu {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            animation: fadeUp 0.3s ease;
+        }
+        .whatsapp-float .sub-menu.open {
+            display: flex;
+        }
+        .whatsapp-float .sub-menu a {
+            background: var(--white);
+            color: var(--dark-blue);
+            padding: 10px 18px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background var(--transition), transform var(--transition);
+        }
+        .whatsapp-float .sub-menu a:hover {
+            background: var(--gray-light);
+            transform: translateX(-4px);
+        }
+        .whatsapp-float .sub-menu a i {
+            color: #25d366;
+            font-size: 1.2rem;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== MODAL ADMIN ========== */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .admin-modal.open {
+            display: flex;
+        }
+        .admin-modal .modal-content {
+            background: var(--white);
+            max-width: 600px;
+            width: 100%;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .admin-modal .modal-content h2 {
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-modal .modal-content .form-group {
+            margin-bottom: 20px;
+        }
+        .admin-modal .modal-content .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark-blue);
+        }
+        .admin-modal .modal-content .form-group input,
+        .admin-modal .modal-content .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color var(--transition);
+        }
+        .admin-modal .modal-content .form-group input:focus,
+        .admin-modal .modal-content .form-group textarea:focus {
+            outline: none;
+            border-color: var(--light-blue);
+        }
+        .admin-modal .modal-content .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .admin-modal .modal-content .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .admin-modal .modal-content .product-editor {
+            border: 1px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .admin-modal .modal-content .product-editor h3 {
+            color: var(--dark-blue);
+            margin-bottom: 12px;
+        }
+        .admin-modal .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            border-top: 2px solid var(--gray-light);
+            padding-top: 20px;
+            flex-wrap: wrap;
+        }
+        .admin-modal .password-input {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .admin-modal .password-input input {
+            flex: 1;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+                width: 100%;
+                margin-top: 12px;
+            }
+            .nav.open {
+                display: block;
+            }
+            .nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .header .container {
+                flex-wrap: wrap;
+            }
+            .header-actions {
+                margin-left: auto;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero {
+                padding: 60px 0 40px;
+            }
+            .product-grid {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+            }
+            .product-card .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .product-card .actions .qty-control {
+                justify-content: center;
+            }
+            .cart-item {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .cart-item .item-info {
+                width: 100%;
+            }
+            .cart-total {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+            .cart-actions {
+                flex-direction: column;
+            }
+            .whatsapp-float .sub-menu a {
+                font-size: 0.8rem;
+                padding: 8px 14px;
+            }
+            .admin-modal .modal-content .form-row {
+                grid-template-columns: 1fr;
+            }
+            .toast-container {
+                bottom: 80px;
+                right: 12px;
+                left: 12px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header class="header">
+        <div class="container">
+            <div class="logo" id="siteLogo">
+                <i class="fas fa-door-open"></i>
+                <span>Milenio S.U.R.L.</span>
+            </div>
+            <nav class="nav" id="mainNav">
+                <ul>
+                    <li><a href="#productos">Productos</a></li>
+                    <li><a href="#carrito">Carrito</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button class="admin-toggle" id="adminToggle" title="Administrar contenido (solo creador)">
+                    <i class="fas fa-wrench"></i>
+                </button>
+                <div class="cart-icon" id="cartIcon" title="Ver carrito">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    HERO
+    ============================================================ -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-logo" id="heroLogo">
+                <i class="fas fa-door-open"></i> Milenio S.U.R.L.
+            </div>
+            <h1 id="heroTitle">Ventanas y Puertas de Acero Galvanizado</h1>
+            <p id="heroSubtitle">Calidad y durabilidad para tu hogar o negocio. Fabricación propia en Cuba.</p>
+            <a href="#productos" class="btn btn-primary">Ver productos</a>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    PRODUCTOS
+    ============================================================ -->
+    <section id="productos" class="section">
+        <div class="container">
+            <h2 class="section-title">Nuestros Productos</h2>
+            <div class="product-grid" id="productGrid">
+                <!-- Ventanas -->
+                <div class="product-card" data-id="ventana">
+                    <div class="image" id="img-ventana">
+                        <i class="fas fa-window-maximize"></i>
+                    </div>
+                    <div class="info">
+                        <h3 id="title-ventana">Ventana de Acero Galvanizado</h3>
+                        <p class="description" id="desc-ventana">Alta calidad, resistente a la corrosión, diseño moderno y seguro.</p>
+                        <div class="price" id="price-ventana">20 000 CUP</div>
+                        <div class="actions">
+                            <div class="qty-control">
+                                <button class="qty-dec" data-id="ventana">−</button>
+                                <span class="qty-value" data-id="ventana">1</span>
+                                <button class="qty-inc" data-id="ventana">+</button>
+                            </div>
+                            <button class="btn btn-primary add-to-cart" data-id="ventana">
+                                <i class="fas fa-cart-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Puertas -->
+                <div class="product-card" data-id="puerta">
+                    <div class="image" id="img-puerta">
+                        <i class="fas fa-door-closed"></i>
+                    </div>
+                    <div class="info">
+                        <h3 id="title-puerta">Puerta de Acero Galvanizado</h3>
+                        <p class="description" id="desc-puerta">Seguridad y resistencia, acabado impecable, disponible en varios colores.</p>
+                        <div class="price" id="price-puerta">35 000 CUP</div>
+                        <div class="actions">
+                            <div class="qty-control">
+                                <button class="qty-dec" data-id="puerta">−</button>
+                                <span class="qty-value" data-id="puerta">1</span>
+                                <button class="qty-inc" data-id="puerta">+</button>
+                            </div>
+                            <button class="btn btn-primary add-to-cart" data-id="puerta">
+                                <i class="fas fa-cart-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CARRITO
+    ============================================================ -->
+    <section id="carrito" class="cart-section">
+        <div class="container">
+            <div class="cart-container">
+                <h2><i class="fas fa-shopping-cart" style="color:var(--light-blue);"></i> Tu Carrito</h2>
+                <div id="cartItems"></div>
+                <div id="cartTotal" class="cart-total">
+                    <span>Total:</span>
+                    <span id="totalAmount">0.00 CUP</span>
+                </div>
+                <div class="cart-actions">
+                    <button class="btn btn-danger" id="clearCartBtn"><i class="fas fa-trash-alt"></i> Vaciar carrito</button>
+                    <button class="btn btn-whatsapp" id="whatsappOrderBtn">
+                        <i class="fab fa-whatsapp"></i> Enviar pedido por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CONTACTO
+    ============================================================ -->
+    <section id="contacto" class="section" style="padding-top:0;">
+        <div class="container">
+            <h2 class="section-title">Contacto</h2>
+            <div style="max-width:600px;margin:0 auto;text-align:center;">
+                <p><i class="fas fa-phone" style="color:var(--light-blue);"></i> +53 50680169 / +53 58612861</p>
+                <p><i class="fab fa-whatsapp" style="color:#25d366;"></i> Escríbenos por WhatsApp para hacer tu pedido.</p>
+                <div style="margin-top:20px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                    <a href="https://wa.me/5350680169?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> 50680169
+                    </a>
+                    <a href="https://wa.me/5358612861?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> 58612861
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Milenio S.U.R.L. - Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    WHATSAPP FLOAT
+    ============================================================ -->
+    <div class="whatsapp-float" id="whatsappFloat">
+        <button class="main-btn" id="whatsappMainBtn" aria-label="Contactar por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+        <div class="sub-menu" id="whatsappSubMenu">
+            <a href="https://wa.me/5350680169?text=Hola%2C%20quiero%20hacer%20un%20pedido." target="_blank">
+                <i class="fab fa-whatsapp"></i> +53 50680169
+            </a>
+            <a href="https://wa.me/5358612861?text=Hola%2C%20quiero%20hacer%20un%20pedido." target="_blank">
+                <i class="fab fa-whatsapp"></i> +53 58612861
+            </a>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    TOAST CONTAINER
+    ============================================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================
+    MODAL ADMIN
+    ============================================================ -->
+    <div class="admin-modal" id="adminModal">
+        <div class="modal-content">
+            <h2><i class="fas fa-wrench" style="color:var(--light-blue);"></i> Administrar contenido</h2>
+            <div id="adminLogin">
+                <div class="form-group">
+                    <label for="adminPassword">Contraseña de administrador</label>
+                    <div class="password-input">
+                        <input type="password" id="adminPassword" placeholder="Ingresa la contraseña" />
+                        <button class="btn btn-primary" id="adminLoginBtn">Acceder</button>
+                    </div>
+                </div>
+            </div>
+            <div id="adminPanel" style="display:none;">
+                <div class="form-group">
+                    <label>Logo de la empresa (imagen)</label>
+                    <input type="file" id="logoUpload" accept="image/*" />
+                    <div style="margin-top:8px;">
+                        <img id="logoPreview" src="" alt="Vista previa del logo" style="max-height:60px;display:none;" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="heroTitleInput">Título del hero</label>
+                    <input type="text" id="heroTitleInput" />
+                </div>
+                <div class="form-group">
+                    <label for="heroSubtitleInput">Subtítulo del hero</label>
+                    <input type="text" id="heroSubtitleInput" />
+                </div>
+
+                <h3 style="margin:20px 0 10px;color:var(--dark-blue);">Productos</h3>
+                <div class="product-editor" data-product="ventana">
+                    <h4>Ventana</h4>
+                    <div class="form-group">
+                        <label>Imagen</label>
+                        <input type="file" class="product-image-upload" data-product="ventana" accept="image/*" />
+                        <div style="margin-top:6px;">
+                            <img class="product-image-preview" data-product="ventana" src="" alt="Vista previa" style="max-height:80px;display:none;" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title-ventana-input">Título</label>
+                        <input type="text" id="title-ventana-input" />
+                    </div>
+                    <div class="form-group">
+                        <label for="desc-ventana-input">Descripción</label>
+                        <textarea id="desc-ventana-input"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price-ventana-input">Precio (solo número, ej: 20000)</label>
+                        <input type="number" id="price-ventana-input" />
+                    </div>
+                </div>
+
+                <div class="product-editor" data-product="puerta">
+                    <h4>Puerta</h4>
+                    <div class="form-group">
+                        <label>Imagen</label>
+                        <input type="file" class="product-image-upload" data-product="puerta" accept="image/*" />
+                        <div style="margin-top:6px;">
+                            <img class="product-image-preview" data-product="puerta" src="" alt="Vista previa" style="max-height:80px;display:none;" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title-puerta-input">Título</label>
+                        <input type="text" id="title-puerta-input" />
+                    </div>
+                    <div class="form-group">
+                        <label for="desc-puerta-input">Descripción</label>
+                        <textarea id="desc-puerta-input"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price-puerta-input">Precio (solo número, ej: 35000)</label>
+                        <input type="number" id="price-puerta-input" />
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="saveAdminChanges"><i class="fas fa-save"></i> Guardar cambios</button>
+                    <button class="btn btn-outline" id="closeAdminModal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    JAVASCRIPT PRINCIPAL (todo en un solo ámbito)
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // =============================================================
+            // 1. CONFIGURACIÓN FIREBASE (CORREGIDA)
+            // =============================================================
+            const firebaseConfig = {
+                apiKey: "AIzaSyBhxBLgVC5DHEu_l6XcLDvgnDFhsEjAoxM",
+                authDomain: "milenio-web.firebaseapp.com",
+                projectId: "milenio-web",
+                storageBucket: "milenio-web.firebasestorage.app",
+                messagingSenderId: "298252913995",
+                // ⚠️ VERIFICA ESTE appId EN TU CONSOLA DE FIREBASE
+                // El valor original tenía "eleca" que probablemente es un error tipográfico.
+                // Reemplázalo con el valor correcto de tu proyecto.
+                appId: "1:298252913995:web:ed53934b0d2e1ca36fcce"
+            };
+
+            let db = null;
+            let firebaseReady = false;
+
+            try {
+                // Inicializar Firebase usando la API compat (disponible globalmente)
+                if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.firestore();
+                    firebaseReady = true;
+                    console.log('✅ Firebase inicializado correctamente');
+                } else {
+                    console.warn('⚠️ Firebase no está disponible. Las funciones de guardado no funcionarán.');
+                }
+            } catch (e) {
+                console.error('❌ Error al inicializar Firebase:', e);
+            }
+
+            // =============================================================
+            // 2. TOAST NOTIFICATIONS
+            // =============================================================
+            function showToast(message, type = 'info', duration = 4000) {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+
+                const iconMap = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    info: 'fa-info-circle'
+                };
+                const icon = iconMap[type] || iconMap.info;
+
+                toast.innerHTML = `
+                    <i class="fas ${icon}"></i>
+                    <span>${message}</span>
+                    <button class="toast-close">&times;</button>
+                `;
+
+                container.appendChild(toast);
+
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => toast.remove());
+
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, duration);
+            }
+
+            // =============================================================
+            // 3. DATOS ADMIN (localStorage)
+            // =============================================================
+            const ADMIN_PASSWORD = 'admin123';
+            const STORAGE_KEY = 'milenio_admin_data';
+
+            const defaultData = {
+                logo: null,
+                heroTitle: 'Ventanas y Puertas de Acero Galvanizado',
+                heroSubtitle: 'Calidad y durabilidad para tu hogar o negocio. Fabricación propia en Cuba.',
+                products: {
+                    ventana: {
+                        title: 'Ventana de Acero Galvanizado',
+                        description: 'Alta calidad, resistente a la corrosión, diseño moderno y seguro.',
+                        price: 20000,
+                        image: null
+                    },
+                    puerta: {
+                        title: 'Puerta de Acero Galvanizado',
+                        description: 'Seguridad y resistencia, acabado impecable, disponible en varios colores.',
+                        price: 35000,
+                        image: null
+                    }
+                }
+            };
+
+            let adminData = null;
+
+            function loadAdminData() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    try {
+                        adminData = JSON.parse(stored);
+                        adminData = deepMerge(defaultData, adminData);
+                        return;
+                    } catch (e) { /* ignore */ }
+                }
+                adminData = JSON.parse(JSON.stringify(defaultData));
+            }
+
+            function saveAdminData() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
+            }
+
+            function deepMerge(target, source) {
+                const result = { ...target };
+                for (let key in source) {
+                    if (source.hasOwnProperty(key)) {
+                        if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
+                            result[key] = deepMerge(target[key] || {}, source[key]);
+                        } else {
+                            result[key] = source[key];
+                        }
+                    }
+                }
+                return result;
+            }
+
+            // =============================================================
+            // 4. APLICAR DATOS ADMIN A LA VISTA
+            // =============================================================
+            function applyAdminData() {
+                if (!adminData) return;
+
+                const logoContainer = document.getElementById('siteLogo');
+                const heroLogo = document.getElementById('heroLogo');
+                if (adminData.logo) {
+                    logoContainer.innerHTML = `<img src="${adminData.logo}" alt="Logo Milenio" />`;
+                    heroLogo.innerHTML = `<img src="${adminData.logo}" alt="Logo Milenio" />`;
+                } else {
+                    logoContainer.innerHTML = `<i class="fas fa-door-open"></i><span>Milenio S.U.R.L.</span>`;
+                    heroLogo.innerHTML = `<i class="fas fa-door-open"></i> Milenio S.U.R.L.`;
+                }
+
+                document.getElementById('heroTitle').textContent = adminData.heroTitle;
+                document.getElementById('heroSubtitle').textContent = adminData.heroSubtitle;
+
+                const products = adminData.products;
+                for (let id of ['ventana', 'puerta']) {
+                    const p = products[id];
+                    if (!p) continue;
+                    document.getElementById(`title-${id}`).textContent = p.title;
+                    document.getElementById(`desc-${id}`).textContent = p.description;
+                    const priceEl = document.getElementById(`price-${id}`);
+                    priceEl.textContent = p.price.toLocaleString() + ' CUP';
+
+                    const imgContainer = document.getElementById(`img-${id}`);
+                    if (p.image) {
+                        imgContainer.innerHTML = `<img src="${p.image}" alt="${p.title}" />`;
+                    } else {
+                        const icon = id === 'ventana' ? 'fa-window-maximize' : 'fa-door-closed';
+                        imgContainer.innerHTML = `<i class="fas ${icon}"></i>`;
+                    }
+                }
+            }
+
+            // =============================================================
+            // 5. CARRITO
+            // =============================================================
+            let cart = [];
+
+            function loadCart() {
+                const stored = localStorage.getItem('milenio_cart');
+                if (stored) {
+                    try {
+                        cart = JSON.parse(stored);
+                        return;
+                    } catch (e) { /* ignore */ }
+                }
+                cart = [];
+            }
+
+            function saveCart() {
+                localStorage.setItem('milenio_cart', JSON.stringify(cart));
+            }
+
+            function getCart() {
+                return cart;
+            }
+
+            function addToCart(productId, quantity) {
+                const existing = cart.find(item => item.id === productId);
+                const productData = adminData.products[productId];
+                const price = productData ? productData.price : (productId === 'ventana' ? 20000 : 35000);
+                const name = productData ? productData.title : (productId === 'ventana' ? 'Ventana' : 'Puerta');
+
+                if (existing) {
+                    existing.quantity += quantity;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: name,
+                        price: price,
+                        quantity: quantity
+                    });
+                }
+                saveCart();
+                renderCart();
+                updateBadge();
+                showToast(`${name} agregado al carrito`, 'success');
+            }
+
+            function removeFromCart(productId) {
+                const item = cart.find(i => i.id === productId);
+                if (item) {
+                    cart = cart.filter(item => item.id !== productId);
+                    saveCart();
+                    renderCart();
+                    updateBadge();
+                    showToast(`${item.name} eliminado del carrito`, 'info');
+                }
+            }
+
+            function updateQuantity(productId, newQuantity) {
+                const item = cart.find(i => i.id === productId);
+                if (item) {
+                    if (newQuantity <= 0) {
+                        removeFromCart(productId);
+                        return;
+                    }
+                    item.quantity = newQuantity;
+                    saveCart();
+                    renderCart();
+                    updateBadge();
+                }
+            }
+
+            function clearCart() {
+                if (cart.length === 0) return;
+                cart = [];
+                saveCart();
+                renderCart();
+                updateBadge();
+                showToast('Carrito vaciado', 'info');
+            }
+
+            function getTotal() {
+                return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            }
+
+            function renderCart() {
+                const container = document.getElementById('cartItems');
+                const totalSpan = document.getElementById('totalAmount');
+
+                if (cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Tu carrito está vacío. Agrega productos desde la sección superior.</p>
+                        </div>
+                    `;
+                    totalSpan.textContent = '0.00 CUP';
+                    return;
+                }
+
+                let html = '';
+                cart.forEach(item => {
+                    const total = item.price * item.quantity;
+                    html += `
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <span class="item-name">${item.name}</span>
+                            </div>
+                            <div class="item-qty">
+                                <button class="cart-qty-dec" data-id="${item.id}">−</button>
+                                <span>${item.quantity}</span>
+                                <button class="cart-qty-inc" data-id="${item.id}">+</button>
+                            </div>
+                            <span class="item-total">${total.toLocaleString()} CUP</span>
+                            <button class="btn btn-danger btn-sm cart-remove" data-id="${item.id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
+                container.querySelectorAll('.cart-qty-dec').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const item = cart.find(i => i.id === id);
+                        if (item) {
+                            updateQuantity(id, item.quantity - 1);
+                        }
+                    });
+                });
+                container.querySelectorAll('.cart-qty-inc').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const item = cart.find(i => i.id === id);
+                        if (item) {
+                            updateQuantity(id, item.quantity + 1);
+                        }
+                    });
+                });
+                container.querySelectorAll('.cart-remove').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        removeFromCart(id);
+                    });
+                });
+
+                const total = getTotal();
+                totalSpan.textContent = total.toLocaleString() + ' CUP';
+            }
+
+            function updateBadge() {
+                const badge = document.getElementById('cartBadge');
+                const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+                badge.textContent = count;
+            }
+
+            // =============================================================
+            // 6. GUARDAR PEDIDO EN FIRESTORE (CORREGIDO)
+            // =============================================================
+            async function guardarPedidoEnFirebase(cartData, total) {
+                if (!firebaseReady || !db) {
+                    console.warn('⚠️ Firebase no disponible, el pedido NO se guardará.');
+                    showToast('Firebase no disponible. El pedido no se guardó en la nube.', 'error');
+                    return false;
+                }
+
+                try {
+                    const pedido = {
+                        fecha: new Date().toISOString(),
+                        productos: cartData.map(item => ({
+                            id: item.id,
+                            nombre: item.name,
+                            cantidad: item.quantity,
+                            precio_unitario: item.price,
+                            subtotal: item.price * item.quantity
+                        })),
+                        total: total,
+                        estado: 'pendiente'
+                    };
+
+                    await db.collection('pedidos').add(pedido);
+                    console.log('✅ Pedido guardado en Firebase:', pedido);
+                    showToast('¡Pedido guardado correctamente en la nube!', 'success');
+                    return true;
+                } catch (error) {
+                    console.error('❌ Error al guardar en Firebase:', error);
+                    showToast('Error al guardar el pedido: ' + error.message, 'error');
+                    return false;
+                }
+            }
+
+            // Exponer la función globalmente para que sea accesible
+            window.guardarPedidoEnFirebase = guardarPedidoEnFirebase;
+            window.getCart = getCart;
+            window.getTotal = getTotal;
+
+            // =============================================================
+            // 7. WHATSAPP + GUARDADO
+            // =============================================================
+            function generateWhatsAppMessage() {
+                if (cart.length === 0) {
+                    return 'Hola, quiero hacer un pedido. Mi carrito está vacío, pero me interesan sus productos.';
+                }
+                let lines = ['Hola, quiero realizar el siguiente pedido:'];
+                cart.forEach(item => {
+                    lines.push(`- ${item.name}: ${item.quantity} unidad(es) → ${(item.price * item.quantity).toLocaleString()} CUP`);
+                });
+                const total = getTotal();
+                lines.push(`Total: ${total.toLocaleString()} CUP`);
+                return lines.join('\n');
+            }
+
+            async function openWhatsAppWithCart(number) {
+                // 1. Primero guardamos el pedido en Firebase
+                const items = getCart();
+                const total = getTotal();
+
+                if (items.length > 0) {
+                    await guardarPedidoEnFirebase(items, total);
+                } else {
+                    showToast('El carrito está vacío. Agrega productos primero.', 'info');
+                    return;
+                }
+
+                // 2. Luego abrimos WhatsApp
+                const message = generateWhatsAppMessage();
+                const encoded = encodeURIComponent(message);
+                window.open(`https://wa.me/${number}?text=${encoded}`, '_blank');
+            }
+
+            // =============================================================
+            // 8. ADMIN: FORMULARIOS
+            // =============================================================
+            function populateAdminForm() {
+                if (!adminData) return;
+                const logoPreview = document.getElementById('logoPreview');
+                if (adminData.logo) {
+                    logoPreview.src = adminData.logo;
+                    logoPreview.style.display = 'block';
+                } else {
+                    logoPreview.style.display = 'none';
+                }
+
+                document.getElementById('heroTitleInput').value = adminData.heroTitle;
+                document.getElementById('heroSubtitleInput').value = adminData.heroSubtitle;
+
+                for (let id of ['ventana', 'puerta']) {
+                    const p = adminData.products[id];
+                    if (!p) continue;
+                    document.getElementById(`title-${id}-input`).value = p.title;
+                    document.getElementById(`desc-${id}-input`).value = p.description;
+                    document.getElementById(`price-${id}-input`).value = p.price;
+
+                    const preview = document.querySelector(`.product-image-preview[data-product="${id}"]`);
+                    if (p.image) {
+                        preview.src = p.image;
+                        preview.style.display = 'block';
+                    } else {
+                        preview.style.display = 'none';
+                    }
+                }
+            }
+
+            function handleFileUpload(input, previewElement) {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    previewElement.src = dataUrl;
+                    previewElement.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function saveFromAdminForm() {
+                const logoPreview = document.getElementById('logoPreview');
+                if (logoPreview.style.display !== 'none' && logoPreview.src) {
+                    adminData.logo = logoPreview.src;
+                } else {
+                    adminData.logo = null;
+                }
+
+                adminData.heroTitle = document.getElementById('heroTitleInput').value;
+                adminData.heroSubtitle = document.getElementById('heroSubtitleInput').value;
+
+                for (let id of ['ventana', 'puerta']) {
+                    const p = adminData.products[id];
+                    if (!p) continue;
+                    p.title = document.getElementById(`title-${id}-input`).value;
+                    p.description = document.getElementById(`desc-${id}-input`).value;
+                    const priceVal = parseInt(document.getElementById(`price-${id}-input`).value, 10);
+                    if (!isNaN(priceVal) && priceVal > 0) p.price = priceVal;
+
+                    const preview = document.querySelector(`.product-image-preview[data-product="${id}"]`);
+                    if (preview.style.display !== 'none' && preview.src) {
+                        p.image = preview.src;
+                    } else {
+                        p.image = null;
+                    }
+                }
+
+                saveAdminData();
+                applyAdminData();
+                renderCart();
+                showToast('¡Cambios guardados correctamente!', 'success');
+            }
+
+            // =============================================================
+            // 9. INICIALIZACIÓN
+            // =============================================================
+            document.addEventListener('DOMContentLoaded', function() {
+                // Cargar datos
+                loadAdminData();
+                applyAdminData();
+
+                // Cargar carrito
+                loadCart();
+                renderCart();
+                updateBadge();
+
+                // ---- Productos ----
+                document.querySelectorAll('.qty-dec').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const span = document.querySelector(`.qty-value[data-id="${id}"]`);
+                        let val = parseInt(span.textContent, 10);
+                        if (val > 1) val--;
+                        span.textContent = val;
+                    });
+                });
+                document.querySelectorAll('.qty-inc').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const span = document.querySelector(`.qty-value[data-id="${id}"]`);
+                        let val = parseInt(span.textContent, 10);
+                        val++;
+                        span.textContent = val;
+                    });
+                });
+                document.querySelectorAll('.add-to-cart').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const span = document.querySelector(`.qty-value[data-id="${id}"]`);
+                        const qty = parseInt(span.textContent, 10);
+                        if (qty > 0) {
+                            addToCart(id, qty);
+                            this.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
+                            setTimeout(() => {
+                                this.innerHTML = '<i class="fas fa-cart-plus"></i> Agregar';
+                            }, 1500);
+                            span.textContent = '1';
+                        }
+                    });
+                });
+
+                // ---- Carrito ----
+                document.getElementById('clearCartBtn').addEventListener('click', function() {
+                    if (cart.length === 0) return;
+                    if (confirm('¿Vaciar el carrito?')) {
+                        clearCart();
+                    }
+                });
+
+                document.getElementById('whatsappOrderBtn').addEventListener('click', function() {
+                    if (cart.length === 0) {
+                        showToast('El carrito está vacío. Agrega productos primero.', 'info');
+                        return;
+                    }
+                    const choice = confirm('¿Enviar al número 50680169? (Cancelar para usar 58612861)');
+                    if (choice) {
+                        openWhatsAppWithCart('5350680169');
+                    } else {
+                        openWhatsAppWithCart('5358612861');
+                    }
+                });
+
+                // ---- Menú móvil ----
+                document.getElementById('menuToggle').addEventListener('click', function() {
+                    document.getElementById('mainNav').classList.toggle('open');
+                });
+                document.querySelectorAll('#mainNav a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        document.getElementById('mainNav').classList.remove('open');
+                    });
+                });
+
+                // ---- WhatsApp float ----
+                const floatBtn = document.getElementById('whatsappMainBtn');
+                const subMenu = document.getElementById('whatsappSubMenu');
+                floatBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    subMenu.classList.toggle('open');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.whatsapp-float')) {
+                        subMenu.classList.remove('open');
+                    }
+                });
+                document.querySelectorAll('#whatsappSubMenu a').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const href = this.getAttribute('href');
+                        const match = href.match(/wa\.me\/(\d+)/);
+                        if (match) {
+                            const number = match[1];
+                            if (cart.length === 0) {
+                                showToast('El carrito está vacío. Agrega productos primero.', 'info');
+                                return;
+                            }
+                            openWhatsAppWithCart(number);
+                        } else {
+                            window.open(href, '_blank');
+                        }
+                        subMenu.classList.remove('open');
+                    });
+                });
+
+                // ---- Scroll al carrito ----
+                document.getElementById('cartIcon').addEventListener('click', function() {
+                    document.getElementById('carrito').scrollIntoView({ behavior: 'smooth' });
+                });
+
+                // ---- ADMIN MODAL ----
+                const adminModal = document.getElementById('adminModal');
+                const adminToggle = document.getElementById('adminToggle');
+                const adminLogin = document.getElementById('adminLogin');
+                const adminPanel = document.getElementById('adminPanel');
+                const adminPasswordInput = document.getElementById('adminPassword');
+                const adminLoginBtn = document.getElementById('adminLoginBtn');
+                const closeAdminBtn = document.getElementById('closeAdminModal');
+                const saveAdminBtn = document.getElementById('saveAdminChanges');
+
+                adminToggle.addEventListener('click', function() {
+                    adminModal.classList.add('open');
+                    adminLogin.style.display = 'block';
+                    adminPanel.style.display = 'none';
+                    adminPasswordInput.value = '';
+                    adminPasswordInput.focus();
+                });
+
+                function closeModal() {
+                    adminModal.classList.remove('open');
+                }
+                closeAdminBtn.addEventListener('click', closeModal);
+                adminModal.addEventListener('click', function(e) {
+                    if (e.target === adminModal) closeModal();
+                });
+
+                adminLoginBtn.addEventListener('click', function() {
+                    const pass = adminPasswordInput.value.trim();
+                    if (pass === ADMIN_PASSWORD) {
+                        adminLogin.style.display = 'none';
+                        adminPanel.style.display = 'block';
+                        populateAdminForm();
+                        showToast('Acceso concedido', 'success');
+                    } else {
+                        showToast('Contraseña incorrecta', 'error');
+                        adminPasswordInput.value = '';
+                        adminPasswordInput.focus();
+                    }
+                });
+                adminPasswordInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        adminLoginBtn.click();
+                    }
+                });
+
+                document.getElementById('logoUpload').addEventListener('change', function() {
+                    const preview = document.getElementById('logoPreview');
+                    handleFileUpload(this, preview);
+                });
+
+                document.querySelectorAll('.product-image-upload').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const productId = this.dataset.product;
+                        const preview = document.querySelector(
+                            `.product-image-preview[data-product="${productId}"]`);
+                        handleFileUpload(this, preview);
+                    });
+                });
+
+                saveAdminBtn.addEventListener('click', function() {
+                    saveFromAdminForm();
+                    closeModal();
+                });
+
+                // ---- Mostrar estado de Firebase al cargar ----
+                if (firebaseReady) {
+                    console.log('🔥 Firebase conectado y listo.');
+                } else {
+                    console.warn('⚠️ Firebase no disponible. Revisa la configuración.');
+                    showToast('Firebase no disponible. Revisa la consola.', 'error', 5000);
+                }
+
+                // ---- Exponer algunas utilidades para depuración ----
+                window.__debug = {
+                    adminData,
+                    cart,
+                    firebaseReady,
+                    db,
+                    guardarPedido: guardarPedidoEnFirebase
+                };
+            });
+
+        })();
+    </script>
+
+</body>
+</html>
