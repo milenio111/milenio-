@@ -1736,6 +1736,27 @@
 
         })();
     </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBhxBLgYC50hEu_16XcLBwgnOFhsEjAoxM",
+    authDomain: "milenio-web.firebaseapp.com",
+    projectId: "milenio-web",
+    storageBucket: "milenio-web.firebasestorage.app",
+    messagingSenderId: "290252913995",
+    appId: "1:290252913995:web:ed53934b0d2e1eca36fcce"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  console.log("Firebase conectado correctamente");
+</script>
 </body>
 </html>
